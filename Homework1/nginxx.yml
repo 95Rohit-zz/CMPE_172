@@ -1,0 +1,30 @@
+---
+
+- hosts : ips
+
+  vars :
+     http_port : 80
+     MyMessage: "Hello World!"
+
+  tasks :
+   - name : install nginx
+     become : true
+     apt: name=nginx state=latest
+
+   - name: saving the file
+     template:
+       src: index.html
+       dest: /home/ubuntu/ansible/index.html
+
+     notify:
+       start nginx
+
+
+  handlers :
+    - name: start nginx
+      service : name=nginx state=started
+
+    - name: stop nginx
+      service:
+        name: nginx
+        state: stopped
